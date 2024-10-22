@@ -15,14 +15,15 @@ TEMPLATE_STR = """
         <table border="1">
             <tr>
               <th>QR Code</th>
-              <th style="width: 100px">Type</th>
-              <th style="width: 200px">Name</th>
-              <th style="width: 150px">Color</th>
+              <th style="width: 100px">Type / Color</th>
+              <th style="width: 150px">Name</th>
             </tr>
             <tr>
-                <td><img src="{{ row.index }}.png" width="100" height="100"></td>
+                <td rowspan="2"><img src="{{ row.index }}.png" width="100" height="100"></td>
                 <td>{{ row.Type }}</td>
-                <td>{{ row.Name }}</td>
+                <td rowspan="2">{{ row.Name }}</td>
+            </tr>
+            <tr>
                 <td>{{ row.Color }}</td>
             </tr>
         </table>
