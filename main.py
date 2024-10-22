@@ -41,47 +41,55 @@ TEMPLATE_STR = """
 """
 
 def clear():
+    """Clears the console for windows or linux systems"""
     currentPlatform = platform.system()
     command = "cls" if currentPlatform == "Windows" else "clear"
     os.system(command)
 
 
+def getUserInput(options, selection):
+    """Shows user selection and returns the users input"""
+    clear()
+
+    print("=================================================== Current Stock ===================================================")
+    print(f"{options}")
+    print("================================================= Current Selection =================================================")
+    print(f"{selection}")
+    print("=====================================================================================================================")
+
+    userInput = input("Please enter the index of the fabric you want to add to your selection. (Type 'Done' to finish selecting): ")
+    return userInput
+
+
 if __name__ == "__main__":
-    # Get excel file as dataframe
+    # Get excel file as DataFrame object
     try:
         xl_file = pd.ExcelFile(FILE_NAME)
         fabrics = pd.read_excel(FILE_NAME, sheet_name=SHEET_NAME, index_col=0)
         fabrics = fabrics.reset_index(drop=True)  # Reset index column
-    except (FileNotFoundError, ValueError) as e:
-        print(e)
+    except (FileNotFoundError, ValueError) as error:
+        print(error)
         quit()
 
     isUserAdding = True
     addedFabrics = pd.DataFrame()
 
     while isUserAdding:
-        clear()
-        print("=================================================== Current Stock ===================================================")
-        print(fabrics)
-        print("================================================= Current Selection =================================================")
-        print(addedFabrics)
-        print("=====================================================================================================================")
-        index = input("Please enter the index of the fabric you want to add to your selection. (Type 'Done' to finish selecting): ")
+        userInput = getUserInput(fabrics, addedFabrics)
 
-        if index == "Done":
-            isUserAdding = False    
+        if userInput == "Done":
+            isUserAdding = False
         else:
             try:
                 # Drop the row from the original DataFrame and re-add the popped row to the second DataFrame
-                index = int(index)
-
-                poppedRow = fabrics.iloc[[index]]
-                fabrics = fabrics.drop(index=index).reset_index(drop=True)
+                userInput = int(userInput)
+                poppedRow = fabrics.iloc[[userInput]]
+                fabrics = fabrics.drop(index=userInput).reset_index(drop=True)
                 addedFabrics = pd.concat([addedFabrics, poppedRow], ignore_index=True)
             except (IndexError, ValueError):  
                 print("Please enter a valid index!")
 
-    # Generate the QR codes
+    # Generate QR codes
     for index, row in addedFabrics.iterrows():
         img = qrcode.make(row['Link'])
         img.save(f"{index}.png")
