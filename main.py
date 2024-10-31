@@ -6,39 +6,8 @@ import os
 
 # Script parameters
 FILE_NAME = "Y:\Hobbies\Furry\Fursuit_Making\Fur_Database.xlsx"
-SHEET_NAME = "Fabric Database"
-TEMPLATE_STR = """
-<html>
-  <body>
-    {% for row in rows %}
-    <div style="margin-bottom: 50px">
-        <table border="1">
-            <tr>
-              <th>QR Code</th>
-              <th style="width: 100px">Type / Color</th>
-              <th style="width: 150px">Name</th>
-            </tr>
-            <tr>
-                <td rowspan="2"><img src="{{ row.index }}.png" width="100" height="100"></td>
-                <td>{{ row.Type }}</td>
-                <td rowspan="2">{{ row.Name }}</td>
-            </tr>
-            <tr>
-                <td>{{ row.Color }}</td>
-            </tr>
-        </table>
-    </div>
-    {% endfor %}
-  </body>
-  <style>
-    table, th, td {
-      border: 1px solid black;
-      border-collapse: collapse;
-      text-align: center
-    }
-  </style>
-</html>
-"""
+SHEET_NAME = "Fabric_Database"
+TEMPLATE_FILE = "template.html"
 
 def clear():
     """Clears the console for windows or linux systems"""
@@ -95,7 +64,8 @@ if __name__ == "__main__":
         img.save(f"{index}.png")
 
     # Create a Jinja2 template object
-    template = Template(TEMPLATE_STR)
+    with open(TEMPLATE_FILE) as f:
+        template = Template(f.read())
 
     # Convert the DataFrame rows to dictionaries so that we can iterate through them
     rows = addedFabrics.to_dict(orient='records')
