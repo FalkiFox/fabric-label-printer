@@ -16,15 +16,22 @@ def clear():
     os.system(command)
 
 
+def displayDataFrame(dataframe):
+    returnString = ""
+    for index, row in dataframe.iterrows():
+        returnString += f"| {index : <2} | {row['Type'] : <8} | {row['Product_Name'] : <35} | {row['Color'] : <15} |\n"
+    return returnString.rstrip()
+
+
 def getUserInput(options, selection):
     """Shows user selection and returns the users input"""
     clear()
 
-    print("=================================================== Current Stock ===================================================")
-    print(f"{options}")
-    print("================================================= Current Selection =================================================")
-    print(f"{selection}")
-    print("=====================================================================================================================")
+    print("============================= Current Stock =============================")
+    print(f"{displayDataFrame(options)}")
+    print("=========================== Current Selection ===========================")
+    print(f"{displayDataFrame(selection)}")
+    print("=========================================================================")
 
     userInput = input("Please enter the index of the fabric you want to add to your selection. (Type 'Done' to finish selecting): ")
     return userInput
